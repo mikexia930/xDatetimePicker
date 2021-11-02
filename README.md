@@ -8,7 +8,7 @@
 
 ### 版本
 ***
-* v1.0.1
+* v1.0.3
 
 ### 基于
 ***
@@ -49,7 +49,21 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
   :is-week-begin-from-sunday="isWeekBeginFromSunday"
   @handleDatetime="handleDatetime"
 >
-    
+    <template v-slot:deductYear>
+      // 年份递减的按钮
+    </template>
+    <template v-slot:deductMonth>
+      // 月份递减的按钮
+    </template>
+    <template v-slot:addYear>
+      // 年份递增的按钮
+    </template>
+    <template v-slot:addMonth>
+      // 月份递增的按钮
+    </template>
+    <template v-slot:showTime="{ hour, minute, second }">
+      // 时分秒显示
+    </template>
 </x-datetime-picker>
 ````
 
