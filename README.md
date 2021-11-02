@@ -8,7 +8,7 @@
 
 ### 版本
 ***
-* v1.0.3
+* v1.0.5
 
 ### 基于
 ***
@@ -78,7 +78,7 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
 |isWeekBeginFromSunday|boolean|周从星期日开始还是从星期一开始|
 |datetime|string/array|当前时间，时间区间为 [ 开始时间, 结束时间]|
 |limit|object|时间选择范围限制，具体参考下方配置说明|
-|chooseSpan|string/number|单次点击选择区间，''/week/month/6|
+|chooseSpan|string/number|单次点击选择区间，''/week/month/秒数|
 |handleDatetime|function|点击响应|
 
 ### language 说明
@@ -130,9 +130,10 @@ isRange等于false的时候使用字符串，例如：2021-10-10 10:10:10
 
 ### chooseSpan 说明
 ```
+'': 不设置
 week：选择当前时间点的周，从周一到周日
 month: 选择当前时间点的月
-7：天数，数字为当前时间点加或者减时间
+秒数: 间隔的秒数，数字为当前时间点加或者减秒数
 ```
 
 ### handleDatetime 说明

@@ -141,12 +141,12 @@ export default {
   },
   props: {
     isRange: Boolean, // 是否为时间区间
-    language: String, // 日期语言包，复用 momentjs
+    language: String, // 当前语言，复用 momentjs 的国际化
     useHMS: String, // 是否使用时分, '' / hour / minute / second，未使用分秒的补 00 分 00 秒
     popoverHMS: Boolean, // 是否弹层设置时分秒
-    datetime: [String, Array], // 当前日期 2020-12-10 10:00:00
+    datetime: [String, Array], // 当前日期 2020-12-10 10:00:00，[ 2020-12-09 10:00:00,  2020-12-10 10:00:00]
     limit: [Boolean, Object], // 选择时间限制 { begin: '' 不限制 / 数字 / 2020-01-01 20:10:10, end: '' 不限制 / 数字 / 2020-01-01 20:10:10 }
-    chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表天数
+    chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表间隔的秒数
     isWeekBeginFromSunday: Boolean, // 一周是否从周日开始
   },
   data() {
@@ -168,13 +168,9 @@ export default {
       let backData = '';
       switch (this.useHMS) {
         case 'hour':
-          backData = ' HH:mm:ss';
-          break;
         case 'minute':
-          backData = ' HH:mm:ss';
-          break;
         case 'second':
-          backData = ' HH:mm:ss.SSS';
+          backData = ' HH:mm:ss';
           break;
         default:
           break;
@@ -207,7 +203,6 @@ export default {
           }
         }
       }
-      console.log('limt', backData, this.limit);
       return backData;
     },
   },
@@ -413,7 +408,7 @@ export default {
                 default:
                   if (this.chooseSpan && !Number.isNaN(Number(this.chooseSpan))) {
                     if (data.position === 'begin') {
-                      curEnd = moment(useDatetime).add(this.chooseSpan, 'days').format(this.getDateFormat);
+                      curEnd = moment(useDatetime).add(this.chooseSpan, 'seconds').format(this.getDateFormat);
                       if (this.limit && this.limit.end && moment(curEnd).isAfter(this.limit.end)) {
                         diff = moment(curEnd).diff(moment(this.limit.end), 'seconds');
                         curEnd = this.limit.end;
@@ -423,7 +418,7 @@ export default {
                         }
                       }
                     } else {
-                      curBegin = moment(useDatetime).subtract(this.chooseSpan, 'days').format(this.getDateFormat);
+                      curBegin = moment(useDatetime).subtract(this.chooseSpan, 'seconds').format(this.getDateFormat);
                       if (this.limit && this.limit.begin && moment(curBegin).isBefore(this.limit.begin)) {
                         diff = moment(this.limit.begin).diff(moment(curBegin), 'seconds');
                         curBegin = this.limit.begin;
@@ -441,7 +436,15 @@ export default {
               this.resetDatetime('begin', curBegin);
               this.resetDatetime('end', curEnd);
             }
-            backData = [this.beginDatetime, this.endDatetime];
+            // 如果为秒，精确到毫秒，结束为 999
+            if (this.useHMS && this.useHMS === 'second') {
+              curBegin = `${this.beginDatetime}.000`;
+              curEnd = `${this.endDatetime}.999`;
+            } else {
+              curBegin = this.beginDatetime;
+              curEnd = this.endDatetime;
+            }
+            backData = [curBegin, curEnd];
           } else {
             backData = this.beginDatetime;
           }
