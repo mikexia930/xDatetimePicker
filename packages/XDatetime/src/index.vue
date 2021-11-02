@@ -146,7 +146,7 @@ export default {
     popoverHMS: Boolean, // 是否弹层设置时分秒
     datetime: [String, Array], // 当前日期 2020-12-10 10:00:00，[ 2020-12-09 10:00:00,  2020-12-10 10:00:00]
     limit: [Boolean, Object], // 选择时间限制 { begin: '' 不限制 / 数字 / 2020-01-01 20:10:10, end: '' 不限制 / 数字 / 2020-01-01 20:10:10 }
-    chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表天数
+    chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表间隔的秒数
     isWeekBeginFromSunday: Boolean, // 一周是否从周日开始
   },
   data() {
@@ -408,7 +408,7 @@ export default {
                 default:
                   if (this.chooseSpan && !Number.isNaN(Number(this.chooseSpan))) {
                     if (data.position === 'begin') {
-                      curEnd = moment(useDatetime).add(this.chooseSpan, 'days').format(this.getDateFormat);
+                      curEnd = moment(useDatetime).add(this.chooseSpan, 'seconds').format(this.getDateFormat);
                       if (this.limit && this.limit.end && moment(curEnd).isAfter(this.limit.end)) {
                         diff = moment(curEnd).diff(moment(this.limit.end), 'seconds');
                         curEnd = this.limit.end;
@@ -418,7 +418,7 @@ export default {
                         }
                       }
                     } else {
-                      curBegin = moment(useDatetime).subtract(this.chooseSpan, 'days').format(this.getDateFormat);
+                      curBegin = moment(useDatetime).subtract(this.chooseSpan, 'seconds').format(this.getDateFormat);
                       if (this.limit && this.limit.begin && moment(curBegin).isBefore(this.limit.begin)) {
                         diff = moment(this.limit.begin).diff(moment(curBegin), 'seconds');
                         curBegin = this.limit.begin;
