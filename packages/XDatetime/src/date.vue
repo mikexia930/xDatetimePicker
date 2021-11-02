@@ -99,7 +99,6 @@ export default {
     hour: [String, Number], // 当前小时 5
     minute: [String, Number], // 当前分钟 5
     second: [String, Number], // 当前秒数 5
-    millisecond: [String, Number], // 当前毫秒数 5
     limit: [Boolean, Object], // 区域限制 { begin: 0 不限制 / 2020-01-01 20:10:10, end: 0 不限制 / today / 2020-01-01 20:10:10 }
     isWeekBeginFromSunday: Boolean,
   },
@@ -410,7 +409,6 @@ export default {
           hour: this.hour,
           minute: this.minute,
           second: this.second,
-          millisecond: this.millisecond,
         });
       }
     },

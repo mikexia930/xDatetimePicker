@@ -60,7 +60,6 @@
         :hour="curHour"
         :minute="curMinute"
         :second="curSecond"
-        :millisecond="curMillisecond"
         :limit="limit"
         :isWeekBeginFromSunday="isWeekBeginFromSunday"
         @handleDate="handleDate"
@@ -164,7 +163,6 @@ export default {
       curHour: 0,
       curMinute: 0,
       curSecond: 0,
-      curMillisecond: 0,
     };
   },
   methods: {
@@ -211,12 +209,17 @@ export default {
       this.curHour = curValue.hour();
       this.curMinute = curValue.minute();
       this.curSecond = curValue.second();
-      this.curMillisecond = curValue.millisecond();
-      this.setCurrentDatetime();
+      this.curDatetime = this.setCurrentDatetime();
     },
     setCurrentDatetime() {
-      const datetime = `${this.curYear}-${this.curMonth}-${this.curDate} ${this.curHour}:${this.curMinute}:${this.curSecond}.${this.curMillisecond}`;
-      this.curDatetime = moment(datetime).format(this.dateFormat);
+      let datetime = `${this.curYear}-${this.curMonth}-${this.curDate}`;
+      if (this.useHMS) {
+        const hour = String(this.curHour).length < 2 ? `0${this.curHour}` : this.curHour;
+        const minute = String(this.curMinute).length < 2 ? `0${this.curMinute}` : this.curMinute;
+        const second = String(this.curSecond).length < 2 ? `0${this.curSecond}` : this.curSecond;
+        datetime = `${datetime} ${hour}:${minute}:${second}`;
+      }
+      return moment(datetime).format(this.dateFormat);
     },
     handleDate(emitDate) {
       const { type, data } = emitDate;
@@ -240,10 +243,9 @@ export default {
           if (!this.popoverHMS) {
             this.showDate();
           }
-          this.setCurrentDatetime();
           this.emitTo(type, {
             position: this.rangePosition,
-            datetime: this.curDatetime,
+            datetime: this.setCurrentDatetime(),
           });
           break;
         case 'cancelTime':
@@ -256,11 +258,9 @@ export default {
           this.curHour = data.hour;
           this.curMinute = data.minute;
           this.curSecond = data.second;
-          this.curMillisecond = data.millisecond;
-          this.setCurrentDatetime();
           this.emitTo(type, {
             position: this.rangePosition,
-            datetime: this.curDatetime,
+            datetime: this.setCurrentDatetime(),
           });
           break;
         case 'showYear':
