@@ -115,6 +115,15 @@ export default {
       },
       deep: true,
     },
+    hour(newVal) {
+      this.curHour = newVal;
+    },
+    minute(newVal) {
+      this.curMinute = newVal;
+    },
+    second(newVal) {
+      this.curSecond = newVal;
+    },
   },
   data() {
     return {
