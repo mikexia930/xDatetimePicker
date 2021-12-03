@@ -62,6 +62,7 @@ export default {
   props: {
     year: Number, // 当前年份 2020
     limit: [Boolean, Object], // 区域限制 { begin: 0 不限制 / 2020-01-01 20:10:10, end: 0 不限制 / today / 2020-01-01 20:10:10 }
+    isHideYearMonthArrow: Boolean,
   },
   watch: {
     year(newVal) {
@@ -144,7 +145,7 @@ export default {
      */
     checkYearMonthIsLimit(type) {
       let backData = false;
-      if (this.limit) {
+      if (this.limit && this.isHideYearMonthArrow) {
         const dateFormat = 'YYYY';
         if (dateFormat) {
           switch (type) {

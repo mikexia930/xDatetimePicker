@@ -47,6 +47,8 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
   :is-range="isRange"
   :choose-span="chooseSpan"
   :is-week-begin-from-sunday="isWeekBeginFromSunday"
+  :is-hide-year-month-arrow="isHideYearMonthArrow"
+  :utc="utc"
   @handleDatetime="handleDatetime"
 >
     <template v-slot:deductYear>
@@ -79,6 +81,8 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
 |datetime|string/array|当前时间，时间区间为 [ 开始时间, 结束时间]|
 |limit|object|时间选择范围限制，具体参考下方配置说明|
 |chooseSpan|string/number|单次点击选择区间，''/week/month/秒数|
+|isHideYearMonthArrow|boolean|是否不受limit限制显示年月筛选箭头|
+|utc|string/number|当前utc -16～16|
 |handleDatetime|function|点击响应|
 
 ### language 说明
@@ -134,6 +138,17 @@ isRange等于false的时候使用字符串，例如：2021-10-10 10:10:10
 week：选择当前时间点的周，从周一到周日
 month: 选择当前时间点的月
 秒数: 间隔的秒数，数字为当前时间点加或者减秒数
+```
+
+### isHideYearMonthArrow 说明
+```
+true，受 limit 限制
+false，不受 limit 限制
+```
+
+### utc 说明
+```
+时区只对需转化为时间点的参数起作用，例如：limit 的空，数字等，如传入是合法的时间格式，则默认为当前时区的。
 ```
 
 ### handleDatetime 说明

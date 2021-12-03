@@ -9,6 +9,7 @@
         :popover-h-m-s="popoverHMS"
         :limit="limitDatetime.begin"
         :is-week-begin-from-sunday="isWeekBeginFromSunday"
+        :is-hide-year-month-arrow="isHideYearMonthArrow"
         :choose-span="chooseSpan"
         @handleSingle="handleSingle"
       >
@@ -46,6 +47,7 @@
           :popover-h-m-s="popoverHMS"
           :limit="limitDatetime.begin"
           :is-week-begin-from-sunday="isWeekBeginFromSunday"
+          :is-hide-year-month-arrow="isHideYearMonthArrow"
           :choose-span="chooseSpan"
           @handleSingle="handleSingle"
         >
@@ -82,6 +84,7 @@
           :popover-h-m-s="popoverHMS"
           :limit="limitDatetime.end"
           :is-week-begin-from-sunday="isWeekBeginFromSunday"
+          :is-hide-year-month-arrow="isHideYearMonthArrow"
           :choose-span="chooseSpan"
           @handleSingle="handleSingle"
         >
@@ -138,19 +141,29 @@ export default {
       this.useHMS = newVal;
       this.initDatetime(this.datetime);
     },
+    utc(newVal) {
+      this.utc = newVal;
+      this.initDatetime(this.datetime);
+    }
   },
   props: {
     isRange: Boolean, // 是否为时间区间
-    language: String, // 当前语言，复用 momentjs 的国际化
+    language: String, // 当前语言，复用 moment 的国际化
     useHMS: String, // 是否使用时分, '' / hour / minute / second，未使用分秒的补 00 分 00 秒
     popoverHMS: Boolean, // 是否弹层设置时分秒
     datetime: [String, Array], // 当前日期 2020-12-10 10:00:00，[ 2020-12-09 10:00:00,  2020-12-10 10:00:00]
-    limit: [Boolean, Object], // 选择时间限制 { begin: '' 不限制 / 数字 / 2020-01-01 20:10:10, end: '' 不限制 / 数字 / 2020-01-01 20:10:10 }
+    limit: [Boolean, Object], // 选择时间限制 { begin: '' 不限制 / 数字 / now / 2020-01-01 20:10:10, end: '' 不限制 / 数字 / now / 2020-01-01 20:10:10 }
     chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表间隔的秒数
     isWeekBeginFromSunday: Boolean, // 一周是否从周日开始
+    isHideYearMonthArrow: Boolean, // 是否隐藏切换年月箭头，如果使用，则根据limit来控制显示隐藏，否则一直显示
+    utc: {
+      type: [String, Number],
+      default: '',
+    }, // 使用的utc时区
   },
   data() {
     return {
+      standardFormat: `YYYY-MM-DD HH:mm:ss`,
       beginDatetime: '', // 区间选择的开始时间 和 单日期选择的当前时间
       endDatetime: '', // 区间选择的结束时间
       limitDatetime: {
@@ -168,7 +181,11 @@ export default {
       let backData = '';
       switch (this.useHMS) {
         case 'hour':
+          backData = ' HH';
+          break;
         case 'minute':
+          backData = ' HH:mm';
+          break;
         case 'second':
           backData = ' HH:mm:ss';
           break;
@@ -177,6 +194,11 @@ export default {
       }
       return `YYYY-MM-DD${backData}`;
     },
+    /**
+     * 初始化 limit 时间段
+     * 1、数字转化为时间点，使用 utc 时间
+     * 2、如果开始时间大于结束时间，开始时间置空
+     */
     getLimitDatetime() {
       const backData = {
         begin: '',
@@ -184,17 +206,25 @@ export default {
       };
       if (this.limit) {
         if (this.limit.begin !== undefined && this.limit.begin !== '') {
-          if (!Number.isNaN(Number(this.limit.begin))) {
-            backData.begin = moment().add(this.limit.begin, 'days').startOf('date').format(this.getDateFormat);
-          } else if (this.checkDatetimeIsValid(this.limit.begin)) {
-            backData.begin = this.formatHMSDatetime('begin', this.limit.begin);
+          if (this.limit.begin === 'now') {
+            backData.begin = this.getUTCMomentIns().format(this.standardFormat);
+          } else {
+            if (!Number.isNaN(Number(this.limit.begin))) {
+              backData.begin = this.getUTCMomentIns().add(this.limit.begin, 'days').startOf('date').format(this.standardFormat);
+            } else if (this.checkDatetimeIsValid(this.limit.begin)) {
+              backData.begin = this.formatHMSDatetime('begin', this.limit.begin);
+            }
           }
         }
         if (this.limit.end !== undefined && this.limit.end !== '') {
-          if (!Number.isNaN(Number(this.limit.end))) {
-            backData.end = moment().add(this.limit.end, 'days').endOf('date').format(this.getDateFormat);
-          } else if (this.checkDatetimeIsValid(this.limit.end)) {
-            backData.end = this.formatHMSDatetime('end', this.limit.end);
+          if (this.limit.end === 'now') {
+            backData.end = this.getUTCMomentIns().format(this.standardFormat);
+          } else {
+            if (!Number.isNaN(Number(this.limit.end))) {
+              backData.end = this.getUTCMomentIns().add(this.limit.end, 'days').endOf('date').format(this.standardFormat);
+            } else if (this.checkDatetimeIsValid(this.limit.end)) {
+              backData.end = this.formatHMSDatetime('end', this.limit.end);
+            }
           }
         }
         if (backData.begin && backData.end) {
@@ -208,6 +238,18 @@ export default {
   },
   methods: {
     /**
+     * utc 的 moment 实例
+     */
+    getUTCMomentIns(datetime = '') {
+      let momentDatetime = '';
+      if (datetime) {
+        momentDatetime = moment(datetime).utcOffset(this.utc);
+      } else {
+        momentDatetime = moment().utcOffset(this.utc);
+      }
+      return momentDatetime
+    },
+    /**
      * 根据当前语言获取 moment 的语言包
      */
     getLan() {
@@ -217,11 +259,19 @@ export default {
       };
     },
     /**
-     * 验证并格式化 datetime 和 limit
+     * 1、初始 utc，如未传入，则使用当前时区
+     * 2、验证传入时间是否合法
+     * ---- 如没有传入时间，则使用当前时间
+     * ---- 判断传入的时间是否合法，不合法，则用当前时间替代
+     * 3、重置 limit 时间
+     * ---- 时间区间，开始时间作为结束时间的 limit begin ，结束时间作为开始时间的 limit end
      * @param datetime
      */
     initDatetime(datetime) {
       let useDatetime;
+      if (!this.utc) {
+        this.utc = moment().utcOffset() / 60;
+      }
       if (this.isRange) {
         // 时间区间
         // 非数组，则自动补充结束时间
@@ -229,7 +279,7 @@ export default {
           if (datetime && this.checkDatetimeIsValid(datetime)) {
             useDatetime = moment(useDatetime);
           } else {
-            useDatetime = moment();
+            useDatetime = this.getUTCMomentIns();
           }
           this.beginDatetime = useDatetime.format(this.getDateFormat);
           this.endDatetime = this.beginDatetime;
@@ -238,7 +288,7 @@ export default {
             if (datetime.length === 1 && this.checkDatetimeIsValid(datetime[0])) {
               useDatetime = moment(useDatetime);
             } else {
-              useDatetime = moment();
+              useDatetime = this.getUTCMomentIns();
             }
             this.beginDatetime = useDatetime.format(this.getDateFormat);
             this.endDatetime = this.beginDatetime;
@@ -247,7 +297,7 @@ export default {
               this.beginDatetime = moment(datetime[0]).format(this.getDateFormat);
               this.endDatetime = moment(datetime[1]).format(this.getDateFormat);
             } else {
-              useDatetime = moment();
+              useDatetime =this.getUTCMomentIns();
               this.beginDatetime = useDatetime.format(this.getDateFormat);
               this.endDatetime = this.beginDatetime;
             }
@@ -265,7 +315,7 @@ export default {
         if (datetime && this.checkDatetimeIsValid(datetime)) {
           useDatetime = moment(useDatetime);
         } else {
-          useDatetime = moment();
+          useDatetime = this.getUTCMomentIns();
         }
         this.beginDatetime = useDatetime.format(this.getDateFormat);
       }
@@ -355,6 +405,10 @@ export default {
           break;
       }
     },
+    /**
+     * 选择时间
+     * @param emitDate
+     */
     handleSingle(emitDate) {
       const { type, data } = emitDate;
       let backData;
@@ -437,18 +491,39 @@ export default {
               this.resetDatetime('end', curEnd);
             }
             // 如果为秒，精确到毫秒，结束为 999
-            if (this.useHMS && this.useHMS === 'second') {
-              curBegin = `${this.beginDatetime}.000`;
-              curEnd = `${this.endDatetime}.999`;
+            /*
+            if (this.useHMS) {
+              switch (this.useHMS) {
+                case 'second':
+                  curBegin = `${this.beginDatetime}.000`;
+                  curEnd = `${this.endDatetime}.999`;
+                  break;
+                case 'minute':
+                  curBegin = `${this.beginDatetime}:00`;
+                  curEnd = `${this.endDatetime}:59`;
+                  break;
+                case 'hour':
+                  curBegin = `${this.beginDatetime}:00:00`;
+                  curEnd = `${this.endDatetime}:59:59`;
+                  break;
+                default:
+                  curBegin = this.beginDatetime;
+                  curEnd = this.endDatetime;
+                  break;
+              }
             } else {
               curBegin = this.beginDatetime;
               curEnd = this.endDatetime;
             }
+             */
             backData = [curBegin, curEnd];
           } else {
             backData = this.beginDatetime;
           }
-          this.emitTo('select', backData);
+          this.emitTo('select', {
+            utc: this.utc,
+            value: backData
+          });
           break;
         default:
           break;

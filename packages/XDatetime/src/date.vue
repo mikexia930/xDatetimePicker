@@ -101,6 +101,7 @@ export default {
     second: [String, Number], // 当前秒数 5
     limit: [Boolean, Object], // 区域限制 { begin: 0 不限制 / 2020-01-01 20:10:10, end: 0 不限制 / today / 2020-01-01 20:10:10 }
     isWeekBeginFromSunday: Boolean,
+    isHideYearMonthArrow: Boolean,
   },
   created() {
     this.initGroup();
@@ -330,7 +331,7 @@ export default {
      */
     checkYearMonthIsLimit(type) {
       let backData = false;
-      if (this.limit) {
+      if (this.limit && this.isHideYearMonthArrow) {
         let dateFormat = 'year';
         switch (type) {
           case 'beginMonth':

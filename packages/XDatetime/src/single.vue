@@ -4,6 +4,7 @@
       <x-year
         :year="curYear"
         :limit="limit"
+        :is-hide-year-month-arrow="isHideYearMonthArrow"
         @handleDate="handleDate"
       >
         <template v-slot:deductYear>
@@ -20,6 +21,7 @@
         :year="curYear"
         :month="curMonth"
         :limit="limit"
+        :is-hide-year-month-arrow="isHideYearMonthArrow"
         @handleDate="handleDate"
       >
         <template v-slot:deductYear>
@@ -62,6 +64,7 @@
         :second="curSecond"
         :limit="limit"
         :isWeekBeginFromSunday="isWeekBeginFromSunday"
+        :is-hide-year-month-arrow="isHideYearMonthArrow"
         @handleDate="handleDate"
       >
         <template v-slot:deductYear>
@@ -139,6 +142,7 @@ export default {
     dateFormat: String, // 时间格式 YYYY-MM-DD HH:mm:ss
     limit: [Boolean, Object], // 区域限制 { begin: '' 不限制 / 2020-01-01 20:10:10, end: '' 不限制 / 2020-01-01 20:10:10 }
     isWeekBeginFromSunday: Boolean, // 一周是否从周日开始
+    isHideYearMonthArrow: Boolean,
   },
   watch: {
     datetime(newVal) {

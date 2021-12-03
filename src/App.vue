@@ -9,10 +9,29 @@
       :is-range="isRange"
       :choose-span="chooseSpan"
       :is-week-begin-from-sunday="isWeekBeginFromSunday"
+      :is-hide-year-month-arrow="isHideYearMonthArrow"
+      :utc="utc"
       @handleDatetime="handleDatetime"
     />
     <div class="selected"> {{ selected }}</div>
     <div class="operation">
+      <div>
+        <select @change="handleUTC">
+          <option :selected="item === utc" :value="item" v-for="(item) in config.utcData" :key="item">
+            UTC{{ item >= 0 ? `+${item}` : item }}
+          </option>
+        </select>
+      </div>
+      <div class="arrow">
+        <button
+          :key="`wa-${index}`"
+          :class="{'choose': (item.value === isHideYearMonthArrow)}"
+          @click="setHideYearMonthArrow(item.value)"
+          v-for="(item, index) in config.arrowHide"
+        >
+          {{ item.name }}
+        </button>
+      </div>
       <div class="weekBegin">
         <button
           :key="`wb-${index}`"
@@ -87,11 +106,22 @@ export default {
     XDatetimePicker,
   },
   created() {
-    this.initDatetime();
+    // this.initDatetime();
   },
   data() {
     return {
       config: {
+        utcData: this.getUTCData(),
+        arrowHide: [
+          {
+            name: '隐藏年月切换箭头',
+            value: true
+          },
+          {
+            name: '不隐藏年月切换箭头',
+            value: false
+          }
+        ],
         howToChooseTime: [
           {
             name: '弹层设置时分秒',
@@ -183,15 +213,24 @@ export default {
       isRange: true,
       language: 'zh_CN',
       limit: {
-        begin: '',
-        end: '2021-10-30 12:00:00',
+        begin: -8,
+        end: 'now',
       },
       chooseSpan: '',
       isWeekBeginFromSunday: true,
       selected: this.datetime,
+      isHideYearMonthArrow: false,
+      utc: moment().utcOffset() / 60,
     };
   },
   methods: {
+    getUTCData() {
+      const backData = [];
+      for (let i = -16; i <= 16; i += 1) {
+        backData.push(i);
+      }
+      return backData;
+    },
     initDatetime() {
       let dateFormat;
       if (this.useHMS) {
@@ -232,6 +271,12 @@ export default {
     },
     setHowToChooseTime(isPopover) {
       this.popoverHMS = isPopover;
+    },
+    setHideYearMonthArrow(status) {
+      this.isHideYearMonthArrow = status;
+    },
+    handleUTC(event) {
+      this.utc = parseInt(event.target.value, 10);
     }
   }
 }

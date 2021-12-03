@@ -64,6 +64,7 @@ export default {
     year: [String, Number], // 当前年份
     month: [String, Number], // 当前月份
     limit: [Boolean, Object], // 区域限制 { begin: 0 不限制 / 2020-01-01 20:10:10, end: 0 不限制 / today / 2020-01-01 20:10:10 }
+    isHideYearMonthArrow: Boolean,
   },
   computed: {
     getShowYear() {
@@ -150,7 +151,7 @@ export default {
      */
     checkYearMonthIsLimit(type) {
       let backData = false;
-      if (this.limit) {
+      if (this.limit && this.isHideYearMonthArrow) {
         const dateFormat = 'YYYY';
         if (dateFormat) {
           switch (type) {
