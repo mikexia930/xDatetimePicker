@@ -4,7 +4,7 @@
       <div>
         <a
          v-show="!checkYearMonthIsLimit('beginYear')"
-         @click.stop.prevent"deductYear"
+         @click.stop.prevent="deductYear"
         >
           <slot name="deductYear">&lt;&lt; </slot>
         </a>
