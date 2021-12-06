@@ -347,7 +347,7 @@ export default {
         list-style: none;
       }
       ul {
-        min-width: 80px;
+        min-width: 70px;
         overflow-y: auto;
         height: 220px;
         position: relative;
@@ -355,13 +355,16 @@ export default {
           text-align: center;
           line-height: 30px;
         }
-        >li:not(.x-limit){
+        >li:not(.x-limit):not(.x-time-selected){
           cursor: pointer;
+          &:hover{
+            background-color: #FFF4F3;
+          }
         }
       }
     }
-    >div:not(:last-child) {
-      border-right: 1px solid #C5C5C5;
+    >div:not(:first-child) {
+      border-left: 1px solid #C5C5C5;
     }
     .x-time-selected {
       color: #fff;
@@ -381,6 +384,14 @@ export default {
     .x-not-current {
       color: #B9BEC1;
     }
+    .x-selected-bg-begin {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+    .x-selected-bg-end {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
     .x-selected {
       color: #fff;
       background: #f96656;
@@ -388,7 +399,7 @@ export default {
     }
     .x-range-ends {
       color: #fff;
-      background: #f96656;
+      background: #FA8578;
       border-radius: 4px;
     }
     .x-in-range {
@@ -405,16 +416,23 @@ export default {
         padding: 0;
         border: 0;
         border-bottom: 2px #ffffff solid;
-        >span {
+        >div {
+          height: 24px;
+          display: flex;
+          justify-content: center;
+        }
+        span {
           display: block;
           box-sizing: border-box;
-          line-height: 34px;
+          line-height: 24px;
+          width: 24px;
+          height: 24px;
         }
       }
       td:not(.x-limit){
         cursor: pointer;
         &:hover{
-          >span:not(.x-selected):not(.x-range-ends) {
+          span:not(.x-selected):not(.x-range-ends) {
             background-color: #FFF4F3;
             border-radius: 4px;
           }

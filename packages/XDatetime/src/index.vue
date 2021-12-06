@@ -163,7 +163,7 @@ export default {
   },
   data() {
     return {
-      standardFormat: `YYYY-MM-DD HH:mm:ss`,
+      standardFormat: 'YYYY-MM-DD HH:mm:ss',
       beginDatetime: '', // 区间选择的开始时间 和 单日期选择的当前时间
       endDatetime: '', // 区间选择的结束时间
       limitDatetime: {

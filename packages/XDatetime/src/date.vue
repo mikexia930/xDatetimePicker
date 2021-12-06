@@ -47,25 +47,30 @@
         <tbody>
         <tr :key="`day-${index}`"  v-for="(group, index) in getMonthDays()">
           <td
-            :class="{
-              'x-not-current': datetime.last || datetime.next,
-              'x-current': datetime.current,
-              'x-limit': checkDateIsLimit(`${datetime.year}-${datetime.month}-${datetime.value}`),
-              'x-in-range': checkIsInRange(`${datetime.year}-${datetime.month}-${datetime.value}`),
-            }"
             :title="`${datetime.year}-${datetime.month}-${datetime.value}`"
             :key="`${datetime.year}-${datetime.month}-${datetime.value}`"
             v-for="(datetime) in group"
             @click.prevent="selectDate(`${datetime.year}-${datetime.month}-${datetime.value}`)"
           >
-            <span
+            <div
               :class="{
-                'x-selected': checkIsSelected(`${datetime.year}-${datetime.month}-${datetime.value}`),
-                'x-range-ends': checkIsRangeEnds(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                'x-not-current': datetime.last || datetime.next,
+                'x-current': datetime.current,
+                'x-limit': checkDateIsLimit(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                'x-in-range': checkIsInRange(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                'x-selected-bg-begin': checkIsBeginEnds(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                'x-selected-bg-end': checkIsEndEnds(`${datetime.year}-${datetime.month}-${datetime.value}`),
               }"
             >
-              {{ datetime.value }}
-            </span>
+              <span
+                :class="{
+                  'x-selected': checkIsSelected(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                  'x-range-ends': checkIsRangeEnds(`${datetime.year}-${datetime.month}-${datetime.value}`),
+                }"
+              >
+                {{ datetime.value }}
+              </span>
+            </div>
           </td>
         </tr>
         </tbody>
@@ -164,6 +169,46 @@ export default {
     },
   },
   methods: {
+    checkIsBeginEnds(date) {
+      let backData = false;
+      if (this.isRange) {
+        switch (this.rangePosition) {
+          case 'begin':
+            if (this.checkIsSelected(date)) {
+              backData = true;
+            }
+            break;
+          case 'end':
+            if (this.checkIsRangeEnds(date)) {
+              backData = true;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+      return backData;
+    },
+    checkIsEndEnds(date) {
+      let backData = false;
+      if (this.isRange) {
+        switch (this.rangePosition) {
+          case 'begin':
+            if (this.checkIsRangeEnds(date)) {
+              backData = true;
+            }
+            break;
+          case 'end':
+            if (this.checkIsSelected(date)) {
+              backData = true;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+      return backData;
+    },
     /**
      * 初始化当前显示月的信息，包括天数，上月下月信息
      */
