@@ -39,8 +39,8 @@
           </li>
         </ul>
       </div>
-      <div>
-        <ul @click="selectSecond" v-show="useHMS === 'second'">
+      <div v-if="useHMS === 'second'">
+        <ul @click="selectSecond">
           <li
             :value="value"
             :key="second-`${value}`"

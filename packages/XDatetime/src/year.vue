@@ -1,5 +1,5 @@
 <template>
-  <div class="x-single">
+  <div class="x-single x-year">
     <div class="x-span">
       <div>
         <a
@@ -204,3 +204,19 @@ export default {
   },
 };
 </script>
+<style lang="less" scoped>
+.x-year {
+  .x-show {
+    table {
+      tr {
+        td {
+          span {
+            width: 45px !important;
+            line-height: 26px !important;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
