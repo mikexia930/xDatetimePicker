@@ -8,7 +8,7 @@
 
 ### 版本
 ***
-* v1.1.0
+* v1.1.2
 
 ### 基于
 ***
@@ -48,7 +48,7 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
   :choose-span="chooseSpan"
   :is-week-begin-from-sunday="isWeekBeginFromSunday"
   :is-hide-year-month-arrow="isHideYearMonthArrow"
-  :utc="utc"
+  :current-utc="currentUtc"
   @handleDatetime="handleDatetime"
 >
     <template v-slot:deductYear>
@@ -82,7 +82,7 @@ import { xDatetimePicker } from 'x-datetimepicker-vue';
 |limit|object|时间选择范围限制，具体参考下方配置说明|
 |chooseSpan|string/number|单次点击选择区间，''/week/month/秒数|
 |isHideYearMonthArrow|boolean|是否不受limit限制显示年月筛选箭头|
-|utc|string/number|当前utc -16～16|
+|currentUtc|string/number|当前utc -16～16|
 |handleDatetime|function|点击响应|
 
 ### language 说明
@@ -146,7 +146,7 @@ true，受 limit 限制
 false，不受 limit 限制
 ```
 
-### utc 说明
+### currentUtc 说明
 ```
 时区只对需转化为时间点的参数起作用，例如：limit 的空，数字等，如传入是合法的时间格式，则默认为当前时区的。
 ```

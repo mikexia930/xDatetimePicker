@@ -141,10 +141,10 @@ export default {
       this.useHMS = newVal;
       this.initDatetime(this.datetime);
     },
-    utc(newVal) {
+    currentUtc(newVal) {
       this.utc = newVal;
       this.initDatetime(this.datetime);
-    }
+    },
   },
   props: {
     isRange: Boolean, // 是否为时间区间
@@ -156,7 +156,7 @@ export default {
     chooseSpan: [String, Number], // '' 为任意选中，选中区间 week 周 month 月 数字代表间隔的秒数
     isWeekBeginFromSunday: Boolean, // 一周是否从周日开始
     isHideYearMonthArrow: Boolean, // 是否隐藏切换年月箭头，如果使用，则根据limit来控制显示隐藏，否则一直显示
-    utc: {
+    currentUtc: {
       type: [String, Number],
       default: '',
     }, // 使用的utc时区
@@ -166,6 +166,7 @@ export default {
       standardFormat: 'YYYY-MM-DD HH:mm:ss',
       beginDatetime: '', // 区间选择的开始时间 和 单日期选择的当前时间
       endDatetime: '', // 区间选择的结束时间
+      utc: '',
       limitDatetime: {
         begin: [],
         end: [],
@@ -269,8 +270,10 @@ export default {
      */
     initDatetime(datetime) {
       let useDatetime;
-      if (!this.utc) {
+      if (!this.currentUtc) {
         this.utc = moment().utcOffset() / 60;
+      } else {
+        this.utc = this.currentUtc;
       }
       if (this.isRange) {
         // 时间区间

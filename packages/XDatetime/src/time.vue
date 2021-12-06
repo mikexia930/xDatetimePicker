@@ -3,7 +3,7 @@
     <div class="x-span" v-if="!popoverHMS">
       <div></div>
       <div>
-        <a @click.prevent="refresh">
+        <a @click.stop.prevent="refresh">
           {{ year }} - {{ month }} - {{ date }}
         </a>
       </div>

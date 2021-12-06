@@ -4,32 +4,32 @@
       <div>
         <a
           v-show="!checkYearMonthIsLimit('beginYear')"
-          @click.prevent="deductYear()"
+          @click.stop.prevent="deductYear()"
         >
           <slot name="deductYear">&lt;&lt; </slot>
         </a>
         <a
           v-show="!checkYearMonthIsLimit('beginMonth')"
-          @click.prevent="deductMonth()"
+          @click.stop.prevent="deductMonth()"
         >
           <slot name="deductMonth">&lt; </slot>
         </a>
       </div>
       <div>
-        <a @click.prevent="showYear">{{ getShowYear }}</a>
+        <a @click.stop.prevent="showYear">{{ getShowYear }}</a>
         -
-        <a @click.prevent="showMonth">{{ getShowMonth }}</a>
+        <a @click.stop.prevent="showMonth">{{ getShowMonth }}</a>
       </div>
       <div>
         <a
           v-show="!checkYearMonthIsLimit('endMonth')"
-          @click.prevent="addMonth()"
+          @click.stop.prevent="addMonth()"
         >
           <slot name="addMonth">&gt; </slot>
         </a>
         <a
           v-show="!checkYearMonthIsLimit('endYear')"
-          @click.prevent="addYear()"
+          @click.stop.prevent="addYear()"
         >
           <slot name="addYear">&gt;&gt;</slot>
         </a>
@@ -50,7 +50,7 @@
             :title="`${datetime.year}-${datetime.month}-${datetime.value}`"
             :key="`${datetime.year}-${datetime.month}-${datetime.value}`"
             v-for="(datetime) in group"
-            @click.prevent="selectDate(`${datetime.year}-${datetime.month}-${datetime.value}`)"
+            @click.stop="selectDate(`${datetime.year}-${datetime.month}-${datetime.value}`)"
           >
             <div
               :class="{
