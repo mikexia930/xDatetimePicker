@@ -4,20 +4,20 @@
       <div>
         <a
          v-show="!checkYearMonthIsLimit('beginYear')"
-         @click.prevent="deductYear"
+         @click.stop.prevent"deductYear"
         >
           <slot name="deductYear">&lt;&lt; </slot>
         </a>
       </div>
       <div>
-        <a @click.prevent="showYear">{{ getShowYear }}</a>
+        <a @click.stop.prevent="showYear">{{ getShowYear }}</a>
         -
-        <a @click.prevent="refresh">{{ getShowMonth }}</a>
+        <a @click.stop.prevent="refresh">{{ getShowMonth }}</a>
       </div>
       <div>
         <a
           v-show="!checkYearMonthIsLimit('endYear')"
-          @click.prevent="addYear"
+          @click.stop.prevent="addYear"
         >
           <slot name="addYear">&gt;&gt;</slot>
         </a>
@@ -39,7 +39,7 @@
               :class="{
                 'x-selected': checkMonthIsSelected(month),
               }"
-              @click.prevent="selectMonth(month)"
+              @click.stop="selectMonth(month)"
             >
               {{ month }}
             </span>
