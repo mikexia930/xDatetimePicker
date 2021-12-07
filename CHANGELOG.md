@@ -1,10 +1,8 @@
-## v1.1.2
-#### fix bug
-* click 事件冒泡bug
-
-## v1.1.1
+## v1.1.4
 #### fix bug
 * props utc 的直接赋值
+* click 事件冒泡bug
+* limit 过度监听bug
 
 ## v1.1.0
 #### 功能更新
