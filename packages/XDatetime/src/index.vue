@@ -38,6 +38,7 @@
     <template v-else>
       <div>
         <x-single
+          :key="'xDatetimePickerBegin'"
           :is-range="isRange"
           range-position="begin"
           :lang="lang"
@@ -75,6 +76,7 @@
       </div>
       <div>
         <x-single
+          :key="'xDatetimePickerEnd'"
           :is-range="isRange"
           range-position="end"
           :date-format="getDateFormat"
