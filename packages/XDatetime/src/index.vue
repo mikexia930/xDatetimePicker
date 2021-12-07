@@ -390,19 +390,20 @@ export default {
      * 重置日期
      * @param position 开始时间/结束时间
      * @param datetime
+     * @param isResetLimit
      */
-    resetDatetime(position, datetime) {
+    resetDatetime(position, datetime, isResetLimit = true) {
       switch (position) {
         case 'end':
           this.endDatetime = datetime;
-          if (this.isRange) {
+          if (this.isRange && isResetLimit) {
             this.limitDatetime.begin.end = datetime;
           }
           break;
         case 'begin':
         default:
           this.beginDatetime = datetime;
-          if (this.isRange) {
+          if (this.isRange && isResetLimit) {
             this.limitDatetime.end.begin = datetime;
           }
           break;
@@ -418,7 +419,7 @@ export default {
       switch (type) {
         case 'selectDate':
         case 'selectTime':
-          this.resetDatetime(data.position, data.datetime);
+          this.resetDatetime(data.position, data.datetime, false);
           if (this.isRange) {
             let curBegin = this.beginDatetime;
             let curEnd = this.endDatetime;
