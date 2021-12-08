@@ -229,11 +229,9 @@ export default {
     },
     selectHour(e) {
       this.getSelectValue(e, 'hour');
-      this.getLimitTimes();
     },
     selectMinute(e) {
       this.getSelectValue(e, 'minute');
-      this.getLimitTimes();
     },
     selectSecond(e) {
       this.getSelectValue(e, 'second');
@@ -246,9 +244,11 @@ export default {
         switch (type) {
           case 'second':
             this.curSecond = value;
+            this.getLimitTimes();
             break;
           case 'minute':
             this.curMinute = value;
+            this.getLimitTimes();
             break;
           case 'hour':
           default:
