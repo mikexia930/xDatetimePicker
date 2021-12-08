@@ -1,9 +1,10 @@
-## v1.1.5
+## v1.1.1 - v1.1.6
 #### fix bug
 * props utc 的直接赋值
 * click 事件冒泡 bug
 * limit 过度监听 bug
 * 对比时间组件 key 的 bug
+* 选择开始或结束时间，时间区间的更新时机 bug
 
 ## v1.1.0
 #### 功能更新

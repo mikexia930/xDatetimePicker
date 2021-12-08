@@ -11,46 +11,59 @@
     </div>
     <div class="x-show-time">
       <div>
-        <ul @click="selectHour">
+        <ul>
           <li
-            :value="value"
-            :key="hour-`${value}`" v-for="(value) in hours"
-            :class="{
-              'x-time-selected': value === curHour,
-              'x-limit': value < hourLimit.begin || value > hourLimit.end
-            }"
+            :key="`hour-${index}`"
+            v-for="(value, index) in hours"
           >
-            {{ getShowValue(value) }}
+            <div
+              :class="{
+               'x-time-selected': value === curHour,
+               'x-limit': value < hourLimit.begin || value > hourLimit.end
+              }"
+              :value="value"
+              @click.stop="selectHour"
+            >
+              {{ getShowValue(value) }}
+            </div>
           </li>
         </ul>
       </div>
       <div>
         <ul @click="selectMinute">
           <li
-            :value="value"
-            :key="minute-`${value}`"
-            v-for="(value) in minutes"
-            :class="{
-              'x-time-selected': value === curMinute,
-              'x-limit': useHMS === 'hour' || value < minuteLimit.begin || value > minuteLimit.end
-            }"
+            :key="minute-`${index}`"
+            v-for="(value, index) in minutes"
           >
-            {{ getShowValue(value) }}
+            <div
+              :class="{
+                'x-time-selected': value === curMinute,
+                'x-limit': useHMS === 'hour' || value < minuteLimit.begin || value > minuteLimit.end
+              }"
+              :value="value"
+              @click.stop="selectMinute"
+            >
+              {{ getShowValue(value) }}
+            </div>
           </li>
         </ul>
       </div>
       <div v-if="useHMS === 'second'">
         <ul @click="selectSecond">
           <li
-            :value="value"
-            :key="second-`${value}`"
-            v-for="(value) in seconds"
-            :class="{
-              'x-time-selected': value === curSecond,
-              'x-limit': useHMS !== 'second' || value < secondLimit.begin || value > secondLimit.end
-            }"
+            :key="`second-${index}`"
+            v-for="(value, index) in seconds"
           >
-            {{ getShowValue(value) }}
+            <div
+              :value="value"
+              :class="{
+                'x-time-selected': value === curSecond,
+                'x-limit': useHMS !== 'second' || value < secondLimit.begin || value > secondLimit.end
+              }"
+              @click.stop="selectSecond"
+            >
+              {{ getShowValue(value) }}
+            </div>
           </li>
         </ul>
       </div>
