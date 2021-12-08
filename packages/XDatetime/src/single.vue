@@ -354,6 +354,7 @@ export default {
         >li {
           text-align: center;
           line-height: 30px;
+          height: 30px;
         }
         >li:not(.x-limit):not(.x-time-selected){
           cursor: pointer;

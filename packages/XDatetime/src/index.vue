@@ -38,7 +38,7 @@
     <template v-else>
       <div>
         <x-single
-          :key="'xDatetimePickerBegin'"
+          key="xDatetimePickerBegin"
           :is-range="isRange"
           range-position="begin"
           :lang="lang"
@@ -76,7 +76,7 @@
       </div>
       <div>
         <x-single
-          :key="'xDatetimePickerEnd'"
+          key="xDatetimePickerEnd"
           :is-range="isRange"
           range-position="end"
           :date-format="getDateFormat"
@@ -493,35 +493,9 @@ export default {
               }
               curBegin = this.formatHMSDatetime('begin', curBegin);
               curEnd = this.formatHMSDatetime('end', curEnd);
-              this.resetDatetime('begin', curBegin);
-              this.resetDatetime('end', curEnd);
             }
-            // 如果为秒，精确到毫秒，结束为 999
-            /*
-            if (this.useHMS) {
-              switch (this.useHMS) {
-                case 'second':
-                  curBegin = `${this.beginDatetime}.000`;
-                  curEnd = `${this.endDatetime}.999`;
-                  break;
-                case 'minute':
-                  curBegin = `${this.beginDatetime}:00`;
-                  curEnd = `${this.endDatetime}:59`;
-                  break;
-                case 'hour':
-                  curBegin = `${this.beginDatetime}:00:00`;
-                  curEnd = `${this.endDatetime}:59:59`;
-                  break;
-                default:
-                  curBegin = this.beginDatetime;
-                  curEnd = this.endDatetime;
-                  break;
-              }
-            } else {
-              curBegin = this.beginDatetime;
-              curEnd = this.endDatetime;
-            }
-             */
+            this.resetDatetime('begin', curBegin);
+            this.resetDatetime('end', curEnd);
             backData = [curBegin, curEnd];
           } else {
             backData = this.beginDatetime;
