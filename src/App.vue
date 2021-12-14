@@ -208,12 +208,12 @@ export default {
         ]
       },
       useHMS: 'second',
-      popoverHMS: true,
+      popoverHMS: false,
       datetime: '',
       isRange: true,
       language: 'zh_CN',
       limit: {
-        begin: -8,
+        begin: -180,
         end: 'now',
       },
       chooseSpan: '',
