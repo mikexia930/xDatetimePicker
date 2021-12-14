@@ -117,6 +117,7 @@ import XYear from './year.vue';
 import XMonth from './month.vue';
 import XTime from './time.vue';
 import moment from 'moment';
+import { getFullDatetime } from './common';
 
 export default {
   name: 'x-single',
@@ -216,12 +217,9 @@ export default {
       this.curDatetime = this.setCurrentDatetime();
     },
     setCurrentDatetime() {
-      let datetime = `${this.curYear}-${this.curMonth}-${this.curDate}`;
+      let datetime = `${this.curYear}-${getFullDatetime(this.curMonth)}-${getFullDatetime(this.curDate)}`;
       if (this.useHMS) {
-        const hour = String(this.curHour).length < 2 ? `0${this.curHour}` : this.curHour;
-        const minute = String(this.curMinute).length < 2 ? `0${this.curMinute}` : this.curMinute;
-        const second = String(this.curSecond).length < 2 ? `0${this.curSecond}` : this.curSecond;
-        datetime = `${datetime} ${hour}:${minute}:${second}`;
+        datetime = `${datetime} ${getFullDatetime(this.curHour)}:${getFullDatetime(this.curMinute)}:${getFullDatetime(this.curSecond)}`;
       }
       return moment(datetime).format(this.dateFormat);
     },

@@ -53,6 +53,7 @@
 
 <script>
 import moment from 'moment';
+import { getFullDatetime } from './common';
 
 export default {
   name: 'x-month',
@@ -71,7 +72,7 @@ export default {
       return this.curYear;
     },
     getShowMonth() {
-      return this.curMonth < 10 ? `0${this.curMonth}` : this.curMonth;
+      return getFullDatetime(this.curMonth);
     },
   },
   watch: {
@@ -120,7 +121,7 @@ export default {
      */
     checkMonthIsSelected(curMonth) {
       let backData = false;
-      const current = `${this.curYear}-${this.getMonthIndex(curMonth)}`;
+      const current = `${this.curYear}-${getFullDatetime(this.getMonthIndex(curMonth))}`;
       const last = `${this.year}-${this.month}`;
       if (moment(current).isSame(last, 'month')) {
         backData = true;
@@ -134,7 +135,7 @@ export default {
     checkMonthIsLimit(curMonth) {
       let backData = false;
       if (this.limit) {
-        const current = `${this.curYear}-${this.getMonthIndex(curMonth)}`;
+        const current = `${this.curYear}-${getFullDatetime(this.getMonthIndex(curMonth))}`;
         if (this.limit.begin && moment(this.limit.begin).isValid()) {
           backData = moment(current).isBefore(this.limit.begin, 'months');
         }

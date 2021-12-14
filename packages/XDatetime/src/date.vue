@@ -89,6 +89,7 @@
 
 <script>
 import moment from 'moment';
+import { getFullDatetime, resetFullDatetime } from './common';
 
 export default {
   name: 'x-date',
@@ -110,7 +111,7 @@ export default {
   },
   created() {
     this.initGroup();
-    this.getMonthDays();
+    // this.getMonthDays();
   },
   data() {
     return {
@@ -134,23 +135,29 @@ export default {
     year(newVal) {
       this.curYear = newVal;
       this.initGroup();
-      this.getMonthDays();
+      // this.getMonthDays();
     },
     month(newVal) {
       this.curMonth = newVal;
       this.initGroup();
-      this.getMonthDays();
+      // this.getMonthDays();
     },
   },
   computed: {
     curHour() {
-      return this.hour < 10 ? `0${this.hour}` : this.hour;
+      return getFullDatetime(this.hour);
     },
     curMinute() {
-      return this.minute < 10 ? `0${this.minute}` : this.minute;
+      return getFullDatetime(this.minute);
     },
     curSecond() {
-      return this.second < 10 ? `0${this.second}` : this.second;
+      return getFullDatetime(this.second);
+    },
+    getShowYear() {
+      return this.curYear;
+    },
+    getShowMonth() {
+      return getFullDatetime(this.curMonth);
     },
     getWeekFormat() {
       let backData;
@@ -161,25 +168,20 @@ export default {
       }
       return backData;
     },
-    getShowYear() {
-      return this.curYear;
-    },
-    getShowMonth() {
-      return this.curMonth < 10 ? `0${this.curMonth}` : this.curMonth;
-    },
   },
   methods: {
     checkIsBeginEnds(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (this.isRange) {
         switch (this.rangePosition) {
           case 'begin':
-            if (this.checkIsSelected(date)) {
+            if (this.checkIsSelected(curDate)) {
               backData = true;
             }
             break;
           case 'end':
-            if (this.checkIsRangeEnds(date)) {
+            if (this.checkIsRangeEnds(curDate)) {
               backData = true;
             }
             break;
@@ -190,16 +192,17 @@ export default {
       return backData;
     },
     checkIsEndEnds(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (this.isRange) {
         switch (this.rangePosition) {
           case 'begin':
-            if (this.checkIsRangeEnds(date)) {
+            if (this.checkIsRangeEnds(curDate)) {
               backData = true;
             }
             break;
           case 'end':
-            if (this.checkIsSelected(date)) {
+            if (this.checkIsSelected(curDate)) {
               backData = true;
             }
             break;
@@ -215,7 +218,7 @@ export default {
     initGroup() {
       let curValue = '';
       if (this.curMonth) {
-        curValue = moment(`${this.curYear}-${this.curMonth}`);
+        curValue = moment(`${this.curYear}-${getFullDatetime(this.curMonth)}`);
       } else {
         curValue = moment();
       }
@@ -223,19 +226,19 @@ export default {
       this.formatGroup.year = curValue.year();
       this.formatGroup.month = curValue.month() + 1;
 
-      const month = `${this.formatGroup.year}-${this.formatGroup.month}`;
-      const monthFirstDay = moment(`${month}-1`);
+      const month = `${this.formatGroup.year}-${getFullDatetime(this.formatGroup.month)}`;
+      const monthFirstDay = moment(`${month}-01`);
       this.formatGroup.monthDays = moment(`${month}`).daysInMonth();
       this.formatGroup.monthBeginDayOfWeek = monthFirstDay.day();
 
-      const nextMonth = moment(`${month}-1`).add(1, 'month');
+      const nextMonth = moment(`${month}-01`).add(1, 'month');
       this.formatGroup.nextYear = nextMonth.year();
       this.formatGroup.nextMonth = nextMonth.month() + 1;
 
-      const lastMonth = moment(`${month}-1`).add(-1, 'month');
+      const lastMonth = moment(`${month}-01`).add(-1, 'month');
       this.formatGroup.lastYear = lastMonth.year();
       this.formatGroup.lastMonth = lastMonth.month() + 1;
-      this.formatGroup.lastMonthDays = moment(`${this.formatGroup.lastYear}-${this.formatGroup.lastMonth}`).daysInMonth();
+      this.formatGroup.lastMonthDays = moment(`${this.formatGroup.lastYear}-${getFullDatetime(this.formatGroup.lastMonth)}`).daysInMonth();
     },
     /**
      * 获取当前月页面所需显示的天数，包括补全的上月和下月
@@ -290,13 +293,16 @@ export default {
         const begin = i * 7;
         backData.push(dateData.slice(begin, begin + 7));
       }
+
+      console.log('backData', backData);
       return backData;
     },
     /**
      * 验证当前日期是否被选中
      * return {Boolean}
      */
-    checkIsSelected(curDate) {
+    checkIsSelected(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (moment(curDate).isSame(this.datetime, 'date')) {
         backData = true;
@@ -307,7 +313,8 @@ export default {
      * 验证当前日期是否在选择区间里
      * return {Boolean}
      */
-    checkIsInRange(curDate) {
+    checkIsInRange(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (this.isRange) {
         let curBegin;
@@ -330,7 +337,8 @@ export default {
     /**
      * 是否是时间区间的节点
      */
-    checkIsRangeEnds(curDate) {
+    checkIsRangeEnds(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (this.isRange) {
         switch (this.rangePosition) {
@@ -353,7 +361,8 @@ export default {
      * 当前时间点是否允许被选中
      * return {Boolean}
      */
-    checkDateIsLimit(curDate) {
+    checkDateIsLimit(date) {
+      const curDate = resetFullDatetime(date);
       let backData = false;
       if (this.limit) {
         if (this.limit.begin) {
@@ -391,7 +400,7 @@ export default {
             break;
         }
         if (dateFormat) {
-          const current = `${this.formatGroup.year}-${this.formatGroup.month}`;
+          const current = `${this.formatGroup.year}-${getFullDatetime(this.formatGroup.month)}`;
           switch (type) {
             case 'beginMonth':
             case 'beginYear':
@@ -442,7 +451,8 @@ export default {
       }
       this.initGroup();
     },
-    selectDate(curDate) {
+    selectDate(date) {
+      const curDate = resetFullDatetime(date);
       if (!this.checkDateIsLimit(curDate)) {
         const splitData = curDate.split('-');
         const year = parseInt(String(splitData[0]), 10);

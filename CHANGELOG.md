@@ -1,3 +1,7 @@
+## v1.1.8
+#### fix bug
+* safari 的兼容
+
 ## v1.1.1 - v1.1.7
 #### fix bug
 * props utc 的直接赋值
