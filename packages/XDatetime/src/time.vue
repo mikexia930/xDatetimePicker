@@ -122,9 +122,13 @@ export default {
   },
   watch: {
     limit: {
-      handler(newVal) {
-        this.limit = newVal;
-        this.getLimitTimes();
+      handler(newVal, oldVal) {
+        if (this.useHMS) {
+          if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+            this.limit = newVal;
+          }
+          this.getLimitTimes();
+        }
       },
       deep: true,
     },
@@ -180,11 +184,13 @@ export default {
       let secondBegin = 0;
       let secondEnd = 59;
       if (limitBegin || limitEnd) {
-        const curMoment = moment(this.datetime);
+        const curDay = moment(this.datetime).format('YYYY-MM-DD');
+        const curMoment = moment(curDay);
         if (limitBegin) {
-          const beginMoment = moment(limitBegin);
-          const beginDiff = beginMoment.diff(curMoment, 'days');
+          const curDayLimitBegin = moment(limitBegin).format('YYYY-MM-DD');
+          const beginDiff = moment(curDayLimitBegin).diff(curMoment, 'days');
           if (beginDiff === 0) {
+            const beginMoment = moment(limitBegin);
             hourBegin = beginMoment.hour();
             if (hourBegin === this.curHour) {
               minuteBegin = beginMoment.minute();
@@ -193,9 +199,10 @@ export default {
           }
         }
         if (limitEnd) {
-          const endMoment = moment(limitEnd);
-          const endDiff = endMoment.diff(curMoment, 'days');
+          const curDayLimitEnd = moment(limitEnd).format('YYYY-MM-DD');
+          const endDiff = moment(curDayLimitEnd).diff(curMoment, 'days');
           if (endDiff === 0) {
+            const endMoment = moment(limitEnd);
             hourEnd = endMoment.hour();
             if (hourEnd === this.curHour) {
               minuteEnd = endMoment.minute();

@@ -293,8 +293,6 @@ export default {
         const begin = i * 7;
         backData.push(dateData.slice(begin, begin + 7));
       }
-
-      console.log('backData', backData);
       return backData;
     },
     /**
