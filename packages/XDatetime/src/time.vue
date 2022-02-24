@@ -81,7 +81,9 @@ import moment from 'moment';
 export default {
   name: 'x-time',
   created() {
-    this.getLimitTimes();
+    if (this.useHMS) {
+      this.getLimitTimes();
+    }
   },
   props: {
     popoverHMS: Boolean, // 是否弹层设置时分秒
@@ -213,17 +215,37 @@ export default {
       }
       this.hourLimit.begin = hourBegin;
       this.hourLimit.end = hourEnd;
-      this.minuteLimit.begin = minuteBegin;
-      this.minuteLimit.end = minuteEnd;
-      this.secondLimit.begin = secondBegin;
-      this.secondLimit.end = secondEnd;
+      if (this.useHMS === 'minute') {
+        this.minuteLimit.begin = minuteBegin;
+        this.minuteLimit.end = minuteEnd;
+      }
+      if (this.useHMS === 'second') {
+        this.secondLimit.begin = secondBegin;
+        this.secondLimit.end = secondEnd;
+      }
 
       if (this.curMinute < this.minuteLimit.begin || this.curMinute > this.minuteLimit.end) {
-        this.curMinute = this.minuteLimit.begin;
+        switch (this.rangePosition) {
+          case 'end':
+            this.curMinute = this.minuteLimit.end;
+            break;
+          case 'begin':
+          default:
+            this.curMinute = this.minuteLimit.begin;
+            break;
+        }
       }
 
       if (this.curSecond < this.secondLimit.begin || this.curSecond > this.secondLimit.end) {
-        this.curSecond = this.secondLimit.begin;
+        switch (this.rangePosition) {
+          case 'end':
+            this.curSecond = this.secondLimit.end;
+            break;
+          case 'begin':
+          default:
+            this.curSecond = this.secondLimit.begin;
+            break;
+        }
       }
     },
     refresh() {

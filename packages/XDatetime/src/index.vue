@@ -324,21 +324,8 @@ export default {
         }
         this.beginDatetime = useDatetime.format(this.getDateFormat);
       }
-      // 验证当前时间是否符合时间区间
-      // 如果约束开始大于结束，则取消开始限制
-      if (this.getLimitDatetime.begin) {
-        if (moment(this.beginDatetime).isBefore(this.getLimitDatetime.begin)) {
-          this.beginDatetime = this.getLimitDatetime.begin;
-        }
-      }
-      if (this.getLimitDatetime.end) {
-        if (moment(this.endDatetime).isAfter(this.getLimitDatetime.end)) {
-          this.endDatetime = this.getLimitDatetime.end;
-        }
-      }
-      if (moment(this.beginDatetime).isAfter(this.endDatetime)) {
-        this.beginDatetime = this.endDatetime;
-      }
+      // 验证是否在limit里
+      this.checkDatetimeByLimit();
       // 重置 limit 时间
       if (this.isRange) {
         this.limitDatetime = {
@@ -358,6 +345,26 @@ export default {
             end: this.getLimitDatetime.end,
           },
         };
+      }
+    },
+    /**
+     * 检查当前时间是否在合法的区间里
+     */
+    checkDatetimeByLimit() {
+      // 验证当前时间是否符合时间区间
+      // 如果约束开始大于结束，则取消开始限制
+      if (this.getLimitDatetime.begin) {
+        if (moment(this.beginDatetime).isBefore(this.getLimitDatetime.begin)) {
+          this.beginDatetime = this.getLimitDatetime.begin;
+        }
+      }
+      if (this.getLimitDatetime.end) {
+        if (moment(this.endDatetime).isAfter(this.getLimitDatetime.end)) {
+          this.endDatetime = this.getLimitDatetime.end;
+        }
+      }
+      if (moment(this.beginDatetime).isAfter(this.endDatetime)) {
+        this.beginDatetime = this.endDatetime;
       }
     },
     /**
@@ -422,6 +429,8 @@ export default {
         case 'selectDate':
         case 'selectTime':
           this.resetDatetime(data.position, data.datetime, false);
+          // 小时分的时候，如果选择昨天的23点，更新到今天的时候，时间会变成当前时间，所以需要重置选择的时间
+          this.checkDatetimeByLimit();
           if (this.isRange) {
             let curBegin = this.beginDatetime;
             let curEnd = this.endDatetime;
